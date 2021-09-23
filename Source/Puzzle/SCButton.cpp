@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SCButton.h"
+
+#include <string>
+
 #include "Block.h"
 #include "Macros.h"
 // Sets default values
@@ -43,11 +46,72 @@ void ASCButton::NotifyActorOnClicked(FKey ButtonPressed)
 	printX("test");
 	MeshSwitch = !MeshSwitch;
 	SCMesh->SetStaticMesh(MeshSwitch ? TempSMesh : TempCMesh);
+	//for (AActor *block : currentGM->AllBlocks)
+	//{
+	if (cancel)
+	{
+		printX("CANCEL");
+		//for (int i = 0; i < currentGM->AllBlocks.Num(); i++)
+		//{
+		//	BlockRef = Cast<ABlock>(currentGM->AllBlocks[i]);
+		//	BlockRef->MyMesh->SetMaterial(0, randMatHolder[i]);
+		//}
+	}
+	else
+	{
+		printX("START");
+		StartPeek();
+		//GetWorldTimerManager().SetTimer(TimerHandle, this, &ASCButton::Hide, 2, false);
+		//StartPeek();
+	}
+	cancel = !cancel;
+}
+
+void ASCButton::StartPeek()
+{
+	randMatHolder.Empty();
+	secondRun = false;
+	TArray<int> randInts;
 	for (AActor *block : currentGM->AllBlocks)
 	{
-		//BlockRef = Cast<ABlock>(currentGM->AllBlocks[0]);
 		BlockRef = Cast<ABlock>(block);
-		BlockRef->MatSwitch = !BlockRef->MatSwitch;
-		BlockRef->MyMesh->SetMaterial(0, BlockRef->MatSwitch ? BlockRef->MatOne : BlockRef->MatTwo);
+		matHolder.Add(BlockRef->MatOne);
+		matHolder.Add(BlockRef->MatTwo);
+		matHolder.Add(BlockRef->MatThree);
+		matHolder.Add(BlockRef->MatFour);
+		matHolder.Add(BlockRef->MatFive);
+		matHolder.Add(BlockRef->MatSix);
+		//or a while loop
+	newRand:
+		if (randInts.Num() == 6)
+		{
+			if (secondRun)
+				break;
+			randInts.Empty();
+			//next time the break above will get triggered == we're done
+			secondRun = true;
+			goto newRand;
+		}
+		int rand = FMath::RandRange(0, 5);
+		logI(rand);
+
+		if (randInts.Contains(rand))
+			goto newRand;
+		else
+		{
+			log("GOTIT");
+			randInts.Add(rand);
+			BlockRef->MyMesh->SetMaterial(0, matHolder[rand]);
+			randMatHolder.Add(matHolder[rand]);
+		}
+	}
+}
+
+void ASCButton::Hide()
+{
+	for (AActor *block : currentGM->AllBlocks)
+	{
+		BlockRef = Cast<ABlock>(block);
+		BlockRef->MyMesh->SetMaterial(0, BlockRef->MatZero);
 	}
 }

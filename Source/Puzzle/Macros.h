@@ -10,3 +10,4 @@
 #define printX(format, ...)if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::White, FString::Printf(TEXT(format), ##__VA_ARGS__), false)
 #define log(x) UE_LOG(LogTemp, Warning, TEXT(x));
 #define logF(x) UE_LOG(LogTemp, Warning, TEXT("%f"),x);
+#define logI(x) UE_LOG(LogTemp, Warning, TEXT("%i"),x);

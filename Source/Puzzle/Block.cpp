@@ -14,8 +14,13 @@ ABlock::ABlock()
 	MyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MyMesh"));
 	//making MyMesh a root component, so creating another mesh will put it under MyMesh
 	RootComponent = MyMesh;
+	MatZero = CreateDefaultSubobject<UMaterial>(TEXT("MatZero"));
 	MatOne = CreateDefaultSubobject<UMaterial>(TEXT("MatOne"));
 	MatTwo = CreateDefaultSubobject<UMaterial>(TEXT("MatTwo"));
+	MatThree = CreateDefaultSubobject<UMaterial>(TEXT("MatThree"));
+	MatFour = CreateDefaultSubobject<UMaterial>(TEXT("MatFour"));
+	MatFive = CreateDefaultSubobject<UMaterial>(TEXT("MatFive"));
+	MatSix = CreateDefaultSubobject<UMaterial>(TEXT("MatSix"));
 }
 
 // Called when the game starts or when spawned

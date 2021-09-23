@@ -30,10 +30,19 @@ public:
 		class UStaticMeshComponent *MyMesh;
 
 	UPROPERTY(EditAnywhere)
+		class UMaterial *MatZero;
+	UPROPERTY(EditAnywhere)
 		class UMaterial *MatOne;
-
 	UPROPERTY(EditAnywhere)
 		class UMaterial *MatTwo;
+	UPROPERTY(EditAnywhere)
+		class UMaterial *MatThree;
+	UPROPERTY(EditAnywhere)
+		class UMaterial *MatFour;
+	UPROPERTY(EditAnywhere)
+		class UMaterial *MatFive;
+	UPROPERTY(EditAnywhere)
+		class UMaterial *MatSix;
 
 	UPROPERTY(EditAnywhere, Category = "Materials")
 		bool MatSwitch = true;
