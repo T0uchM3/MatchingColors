@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PuzzleGameModeBase.h"
 #include "GameFramework/Actor.h"
 #include "SCButton.generated.h"
 
@@ -42,18 +43,18 @@ public:
 	//can only find object through the constructor it seems
 	//so these temp vars are here to make those meshes vars accessible from other meths
 	UStaticMesh *TempSMesh, *TempCMesh;
+	//indicator for switching the button meshes
 	bool MeshSwitch = true;
-	bool cancel = false;
+	bool cancel;
 	FTimerHandle TimerHandle;
 	//array of current block's mats (umaterial)
 	UPROPERTY()
 		TArray<UMaterial *> matHolder;
-	//array of the mat that got assigned to each block with rand
-	UPROPERTY()
-		TArray<UMaterial *> randMatHolder;
+	//indicating that we went through the first 6 blocks and now we're ready for the other 6
 	bool secondRun = false;
-
+	TArray<AActor *> TempBlockHolder;
 private:
 	//click event on the mesh!
 	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
+	void RandomizeBlocks();
 };

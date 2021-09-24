@@ -52,7 +52,14 @@ public:
 	UPROPERTY()
 		APuzzleGameModeBase *currentGM;
 	TArray<UStaticMeshComponent *> meshComp;
-
+	////trackking the number of blocks that got clicked in a row
+	//UPROPERTY()
+	//	TArray<AActor *> comboCheck;
+	FTimerHandle TimerHandle;
+	UMaterial *ActiveMat;
+	bool disabled = false;
 private:
 	virtual void NotifyActorOnClicked(FKey PressedButton = EKeys::LeftMouseButton) override;
+	UFUNCTION()
+		void HideBlock();
 };

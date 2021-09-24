@@ -20,4 +20,12 @@ public:
 	APuzzlePlayerController *playerController;
 	UPROPERTY()
 		TArray<AActor *> AllBlocks;
+	//array of the mat that got assigned to each block with rand
+	UPROPERTY()
+		TArray<UMaterial *> randMatHolder;
+	//getting changed in SCButton, and read in Block
+	bool GStart = false;
+	//trackking the number of blocks that got clicked in a row
+	UPROPERTY()
+		TArray<AActor *> comboCheck;
 };

@@ -32,7 +32,8 @@ void ABlock::BeginPlay()
 	currentGM = Cast<APuzzleGameModeBase>(GetWorld()->GetAuthGameMode());
 	if (currentGM != nullptr)
 	{
-		currentGM->AllBlocks.Add(this);
+		//adding blocks to the list in random order
+		currentGM->AllBlocks.Insert(this, FMath::RandRange(0, currentGM->AllBlocks.Num()));
 	}
 	//MyMesh->SetMaterial(0, MatOne);
 }
@@ -45,19 +46,87 @@ void ABlock::Tick(float DeltaTime)
 
 void ABlock::NotifyActorOnClicked(FKey ButtonPressed)
 {
-	//printX("+++++++++++++++++++++++");
-	//auto msg = TEXT("NAME::: ") + this->GetName();
-	//if (GEngine)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, msg);
-	//}
+	if (currentGM->GStart)
+	{
+		for (int i = 0; i < currentGM->AllBlocks.Num(); i++)
+		{
+			if (currentGM->AllBlocks[i] == this)
+			{
+				if (disabled)
+				{
+					return;
+				}
+				//prevent clicking the same block twice
+				if (currentGM->comboCheck.Contains(this))
+				{
+					printX("already there return");
+					return;
+				}
+				if (currentGM->comboCheck.Num() > 3)
+				{
+					printX("empty");
+					currentGM->comboCheck.Empty();
+				}
 
-	//printFF("name:: %s", *this->GetName());
-	//MatSwitch = !MatSwitch;
-	//MyMesh->SetMaterial(0, MatSwitch ? MatOne : MatTwo);
+				if (currentGM->comboCheck.Num() == 0)
+				{
+					MyMesh->SetMaterial(0, currentGM->randMatHolder[i]);
+					currentGM->comboCheck.Add(this);
+					GetWorldTimerManager().SetTimer(TimerHandle, this, &ABlock::HideBlock, 1, false);
+					ActiveMat = currentGM->randMatHolder[i];
+					return;
+				}
+				if (currentGM->comboCheck.Num() == 1)
+				{
+					MyMesh->SetMaterial(0, currentGM->randMatHolder[i]);
+					ActiveMat = currentGM->randMatHolder[i];
+					currentGM->comboCheck.Add(this);
 
-	//printX("array size:: %i", currentGM->AllBlocks.Num());
-	//bb = Cast<ABlock>(currentGM->AllBlocks[0]);
-	//bb->MyMesh->SetMaterial(0, MatSwitch ? MatOne : MatTwo);
-	//printX("first block name: %s", *currentGM->AllBlocks[0]->GetName());
+					//reference to the first block that got clicked
+					ABlock *b1 = Cast<ABlock>(currentGM->comboCheck[0]);
+
+					//first block's mat == 2nd block's mat in combo list
+					if (b1->ActiveMat == this->ActiveMat)
+					{
+						currentGM->comboCheck.Empty();
+						//b1.activemat or this instance's activemat same thing
+						b1->MyMesh->SetMaterial(0, ActiveMat);
+						b1->GetWorldTimerManager().ClearTimer(b1->TimerHandle);
+						b1->disabled = true;
+						this->disabled = true;
+					}
+					else
+					{
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		return;
+	}
+}
+
+void ABlock::HideBlock()
+{
+	for (int i = 0; i < currentGM->AllBlocks.Num(); i++)
+	{
+		if (currentGM->AllBlocks[i] == this)
+		{
+			MyMesh->SetMaterial(0, MatZero);
+			//check if we're in the first block in the combo list
+			if (currentGM->comboCheck[0] == this && currentGM->comboCheck.Num() == 2)
+			{
+				//when the first block timer end, we hide the 2nd block with it too
+				ABlock *b2 = Cast<ABlock>(currentGM->comboCheck[1]);
+				b2->HideBlock();
+			}
+			//only clear the combo list at 2nd block
+			if (currentGM->comboCheck.Num() == 2)
+			{
+				currentGM->comboCheck.Empty();
+			}
+		}
+	}
 }

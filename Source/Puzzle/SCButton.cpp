@@ -43,6 +43,7 @@ void ASCButton::Tick(float DeltaTime)
 void ASCButton::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
+	FVector newLocation = GetActorLocation();
 	printX("test");
 	MeshSwitch = !MeshSwitch;
 	SCMesh->SetStaticMesh(MeshSwitch ? TempSMesh : TempCMesh);
@@ -51,6 +52,9 @@ void ASCButton::NotifyActorOnClicked(FKey ButtonPressed)
 	if (cancel)
 	{
 		printX("CANCEL");
+		newLocation.Y = newLocation.Y + 60.f;
+		this->SetActorLocation(newLocation);
+		currentGM->GStart = false;
 		//for (int i = 0; i < currentGM->AllBlocks.Num(); i++)
 		//{
 		//	BlockRef = Cast<ABlock>(currentGM->AllBlocks[i]);
@@ -61,17 +65,20 @@ void ASCButton::NotifyActorOnClicked(FKey ButtonPressed)
 	{
 		printX("START");
 		StartPeek();
-		//GetWorldTimerManager().SetTimer(TimerHandle, this, &ASCButton::Hide, 2, false);
-		//StartPeek();
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &ASCButton::Hide, 2, false);
+		newLocation.Y = newLocation.Y - 60.f;
+		this->SetActorLocation(newLocation);
 	}
 	cancel = !cancel;
 }
 
 void ASCButton::StartPeek()
 {
-	randMatHolder.Empty();
+	currentGM->randMatHolder.Empty();
 	secondRun = false;
 	TArray<int> randInts;
+	RandomizeBlocks();
+	//currentGM->AllBlocks.Append();
 	for (AActor *block : currentGM->AllBlocks)
 	{
 		BlockRef = Cast<ABlock>(block);
@@ -102,7 +109,7 @@ void ASCButton::StartPeek()
 			log("GOTIT");
 			randInts.Add(rand);
 			BlockRef->MyMesh->SetMaterial(0, matHolder[rand]);
-			randMatHolder.Add(matHolder[rand]);
+			currentGM->randMatHolder.Add(matHolder[rand]);
 		}
 	}
 }
@@ -113,5 +120,21 @@ void ASCButton::Hide()
 	{
 		BlockRef = Cast<ABlock>(block);
 		BlockRef->MyMesh->SetMaterial(0, BlockRef->MatZero);
+		currentGM->GStart = true;
+	}
+}
+
+void ASCButton::RandomizeBlocks()
+{
+	//guarantee true randomness
+	TempBlockHolder.Empty();
+	for (AActor *block : currentGM->AllBlocks)
+	{
+		TempBlockHolder.Add(block);
+	}
+	currentGM->AllBlocks.Empty();
+	for (AActor *block : TempBlockHolder)
+	{
+		currentGM->AllBlocks.Insert(block, FMath::RandRange(0, currentGM->AllBlocks.Num()));
 	}
 }
