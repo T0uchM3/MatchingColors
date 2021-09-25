@@ -3,8 +3,10 @@
 #include "Block.h"
 #include "Macros.h"
 //#include "PuzzleGameModeBase.h"
+#include "EngineUtils.h"
 #include "PuzzlePlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "SCButton.h"
 // Sets default values
 ABlock::ABlock()
 {
@@ -59,12 +61,10 @@ void ABlock::NotifyActorOnClicked(FKey ButtonPressed)
 				//prevent clicking the same block twice
 				if (currentGM->comboCheck.Contains(this))
 				{
-					printX("already there return");
 					return;
 				}
 				if (currentGM->comboCheck.Num() > 3)
 				{
-					printX("empty");
 					currentGM->comboCheck.Empty();
 				}
 
@@ -94,6 +94,21 @@ void ABlock::NotifyActorOnClicked(FKey ButtonPressed)
 						b1->GetWorldTimerManager().ClearTimer(b1->TimerHandle);
 						b1->disabled = true;
 						this->disabled = true;
+						currentGM->EndCounter++;
+						logI(currentGM->EndCounter);
+						if (currentGM->EndCounter == 6)
+						{
+							//log("aaaaaaaa");
+							for (TActorIterator<ASCButton> actorItr(GetWorld()); actorItr; ++actorItr)
+							{
+								if ((*actorItr)->GetName().Compare("SCButton"))
+								{
+									//log("bbbbbbbb");
+									actorItr->CancelMeth();
+									currentGM->EndCounter = 0;
+								}
+							}
+						}
 					}
 					else
 					{
@@ -122,11 +137,7 @@ void ABlock::HideBlock()
 				ABlock *b2 = Cast<ABlock>(currentGM->comboCheck[1]);
 				b2->HideBlock();
 			}
-			//only clear the combo list at 2nd block
-			if (currentGM->comboCheck.Num() == 2)
-			{
-				currentGM->comboCheck.Empty();
-			}
+			currentGM->comboCheck.Empty();
 		}
 	}
 }

@@ -43,27 +43,17 @@ void ASCButton::Tick(float DeltaTime)
 void ASCButton::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
-	FVector newLocation = GetActorLocation();
-	printX("test");
+	newLocation = GetActorLocation();
 	MeshSwitch = !MeshSwitch;
 	SCMesh->SetStaticMesh(MeshSwitch ? TempSMesh : TempCMesh);
 	//for (AActor *block : currentGM->AllBlocks)
 	//{
 	if (cancel)
 	{
-		printX("CANCEL");
-		newLocation.Y = newLocation.Y + 60.f;
-		this->SetActorLocation(newLocation);
-		currentGM->GStart = false;
-		//for (int i = 0; i < currentGM->AllBlocks.Num(); i++)
-		//{
-		//	BlockRef = Cast<ABlock>(currentGM->AllBlocks[i]);
-		//	BlockRef->MyMesh->SetMaterial(0, randMatHolder[i]);
-		//}
+		CancelMeth();
 	}
 	else
 	{
-		printX("START");
 		StartPeek();
 		GetWorldTimerManager().SetTimer(TimerHandle, this, &ASCButton::Hide, 2, false);
 		newLocation.Y = newLocation.Y - 60.f;
@@ -72,6 +62,7 @@ void ASCButton::NotifyActorOnClicked(FKey ButtonPressed)
 	cancel = !cancel;
 }
 
+//assign mats to the blocks and memorize it's locations
 void ASCButton::StartPeek()
 {
 	currentGM->randMatHolder.Empty();
@@ -82,6 +73,8 @@ void ASCButton::StartPeek()
 	for (AActor *block : currentGM->AllBlocks)
 	{
 		BlockRef = Cast<ABlock>(block);
+		//after winning this need to reset
+		BlockRef->disabled = false;
 		matHolder.Add(BlockRef->MatOne);
 		matHolder.Add(BlockRef->MatTwo);
 		matHolder.Add(BlockRef->MatThree);
@@ -106,7 +99,6 @@ void ASCButton::StartPeek()
 			goto newRand;
 		else
 		{
-			log("GOTIT");
 			randInts.Add(rand);
 			BlockRef->MyMesh->SetMaterial(0, matHolder[rand]);
 			currentGM->randMatHolder.Add(matHolder[rand]);
@@ -137,4 +129,15 @@ void ASCButton::RandomizeBlocks()
 	{
 		currentGM->AllBlocks.Insert(block, FMath::RandRange(0, currentGM->AllBlocks.Num()));
 	}
+}
+
+void ASCButton::CancelMeth()
+{
+	newLocation.Y = newLocation.Y + 60.f;
+	this->SetActorLocation(newLocation);
+	currentGM->GStart = false;
+	MeshSwitch = !MeshSwitch;
+	SCMesh->SetStaticMesh(MeshSwitch ? TempSMesh : TempCMesh);
+	cancel = !cancel;
+	Hide();
 }

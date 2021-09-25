@@ -42,7 +42,6 @@ void APuzzlePlayerController::BeginPlay()
 
 void APuzzlePlayerController::DisableCursor()
 {
-	printX("DISAAAABBBLLEE");
 	//not doing shit
 	//seems like can't change it in runtime
 	this->bEnableClickEvents = false;

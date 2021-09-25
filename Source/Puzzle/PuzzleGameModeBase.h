@@ -28,4 +28,6 @@ public:
 	//trackking the number of blocks that got clicked in a row
 	UPROPERTY()
 		TArray<AActor *> comboCheck;
+	//increament each time a correct combo get scored
+	int EndCounter = 0;
 };

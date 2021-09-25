@@ -37,21 +37,4 @@ public:
 		void DisableCursor();
 	UPROPERTY(EditAnywhere, Category = "arrayExample ")
 		TArray<AActor *> TestArray;
-
-	//template <typename T>
-	//void FindAllActorX(UWorld *world, TArray<T *> Holder)
-	//{
-	//	for (TActorIterator<T> It(world); It; ++It)
-	//	{
-	//		Holder.Add(*It);
-	//	}
-	//}
-
-	//UPROPERTY(EditAnywhere)
-	//	bool mouseShow = true;
-
-	//UPROPERTY(VisibleAnywhere, Category = "Materials")
-	//	UMaterialInterface* Mat1;
-	//UPROPERTY(VisibleAnywhere, Category = "Materials")
-	//	UMaterialInterface* Mat2;
 };

@@ -52,9 +52,12 @@ public:
 		TArray<UMaterial *> matHolder;
 	//indicating that we went through the first 6 blocks and now we're ready for the other 6
 	bool secondRun = false;
+	//used to hold the blocks to rearrange them back into their original array
 	TArray<AActor *> TempBlockHolder;
+	void CancelMeth();
 private:
 	//click event on the mesh!
 	virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 	void RandomizeBlocks();
+	FVector newLocation;
 };

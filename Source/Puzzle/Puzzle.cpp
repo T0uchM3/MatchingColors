@@ -3,4 +3,4 @@
 #include "Puzzle.h"
 #include "Modules/ModuleManager.h"
 
-IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, Puzzle, "Puzzle" );
+IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, Puzzle, "Puzzle");

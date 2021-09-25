@@ -5,7 +5,6 @@
 
 APuzzleGameModeBase::APuzzleGameModeBase()
 {
-	UE_LOG(LogTemp, Warning, TEXT("WAAAAAAA"));
 	DefaultPawnClass = StaticClass();
 	PlayerControllerClass = APuzzlePlayerController::StaticClass();
 }
